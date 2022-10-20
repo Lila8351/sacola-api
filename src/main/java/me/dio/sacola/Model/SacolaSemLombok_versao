@@ -1,0 +1,95 @@
+package me.dio.sacola.Model;
+
+//A sacola tem uma identificação (Id), esta vinculada a um cliente (clienteId), ela possui itens (objetos da classe Item)
+//e ela esta fechada ou não (boolean)
+//obs: os itens são colocados em lista, utilizando para isso a classe java.util List<>
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import javax.persistence.*;
+import java.util.List;
+
+//A anotação @Entity identifica e salva Sacola dentro de um banco de dados.
+@Entity
+public class SacolaSemLombok {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    //Como é utilizada uma tabela num banco relacional é obrigatório ter uma primary key, indicado com um long Id.
+    private Long id;
+    //  Como essas tabelas (sacola x itens x cliente) se correlacionam, é necessário indicar como isso acontece.
+    // Várias sacolas podem ser relacionadas a um mesmo cliente, portanto usa-se o ManytoOne.
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @OneToMany
+    @JsonIgnore
+    private Cliente cliente;
+    //  O cliente também é uma informação a ser salva no banco de dados.
+    private List<Item> itens;
+    //Um arrayList da classe Item, que portanto engloba todos os objetos dessa classe, independente de quantidade.
+    private Double valorTotal;
+    @Enumerated
+    private me.dio.sacola.Enumeration.FormaPagamento FormaPagamento;
+    private boolean fechada;
+
+    //Agora, construindo normalmente o objeto da classe Sacola.
+    //E por utuilizar o Hibernate é necessário também criar um construtor vazio
+    //E como tem atributos private, para conseguir manipulá-los é necessário usar get set.
+    public SacolaSemLombok() {
+    }
+
+    public SacolaSemLombok(long id, Cliente cliente, List<Item> itens, Double valorTotal, me.dio.sacola.Enumeration.FormaPagamento formaPagamento, boolean fechada) {
+        this.id = id;
+        this.cliente = cliente;
+        this.itens = itens;
+        this.valorTotal = valorTotal;
+        FormaPagamento = formaPagamento;
+        this.fechada = fechada;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public Cliente getCliente() {
+        return cliente;
+    }
+
+    public void setCliente(Cliente cliente) {
+        this.cliente = cliente;
+    }
+
+    public List<Item> getItens() {
+        return itens;
+    }
+
+    public void setItens(List<Item> itens) {
+        this.itens = itens;
+    }
+
+    public Double getValorTotal() {
+        return valorTotal;
+    }
+
+    public void setValorTotal(Double valorTotal) {
+        this.valorTotal = valorTotal;
+    }
+
+    public me.dio.sacola.Enumeration.FormaPagamento getFormaPagamento() {
+        return FormaPagamento;
+    }
+
+    public void setFormaPagamento(me.dio.sacola.Enumeration.FormaPagamento formaPagamento) {
+        FormaPagamento = formaPagamento;
+    }
+
+    public boolean isFechada() {
+        return fechada;
+    }
+
+    public void setFechada(boolean fechada) {
+        this.fechada = fechada;
+    }
+}
